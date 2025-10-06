@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 import { QueryClient } from "@tanstack/vue-query";
 import { createStarknetVue } from "starknet-vue";
-import { mainnet } from "@starknet-react/chains";
-import { publicProvider } from "@starknet-react/chains/providers";
+import { mainnet } from "starknet-vue-chains";
+import { publicProvider } from "starknet-vue-chains/providers";
 
 import App from "./App.vue";
 

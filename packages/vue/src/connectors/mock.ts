@@ -9,7 +9,7 @@ import {
   type SwitchStarknetChainParameters,
   type TypedData,
 } from "@starknet-io/types-js";
-import { devnet, mainnet } from "@starknet-react/chains";
+import { devnet, mainnet } from "starknet-vue-chains";
 import type {
   AccountInterface,
   Call,

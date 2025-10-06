@@ -1,6 +1,6 @@
 {
   "name": "starknet-vue",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "license": "MIT",
   "repository": "apibara/starknet-react",
   "type": "module",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@starknet-io/types-js": "^0.7.10",
-    "@starknet-react/chains": "workspace:^",
+    "starknet-vue-chains": "1.0.0-alpha.0",
     "@starknet-react/core": "workspace:^",
     "@tanstack/vue-query": "^5.25.0",
     "abi-wan-kanabi": "^2.2.4",

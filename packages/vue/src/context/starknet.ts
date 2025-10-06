@@ -3,7 +3,7 @@ import {
   type Chain,
   mainnet,
   sepolia,
-} from "@starknet-react/chains";
+} from "starknet-vue-chains";
 import {
   QueryClient,
   VueQueryPlugin,
@@ -21,12 +21,12 @@ import {
 import type { Connector } from "../connectors";
 import type { ConnectorData } from "../connectors/base";
 import { ConnectorNotFoundError } from "../errors";
-import type { ExplorerFactory } from "@starknet-react/chains/explorers";
+import type { ExplorerFactory } from "starknet-vue-chains/explorers";
 import {
   avnuPaymasterProvider,
   type ChainPaymasterFactory,
-} from "@starknet-react/chains/providers/paymaster";
-import type { ChainProviderFactory } from "@starknet-react/chains/providers";
+} from "starknet-vue-chains/providers/paymaster";
+import type { ChainProviderFactory } from "starknet-vue-chains/providers";
 
 const StarknetContextKey: InjectionKey<StarknetState> = Symbol("StarknetContext");
 

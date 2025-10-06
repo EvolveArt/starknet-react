@@ -5,7 +5,7 @@ import {
   type RpcTypeToMessageMap,
   type WalletEventListener,
 } from "@starknet-io/types-js";
-import { mainnet, sepolia } from "@starknet-react/chains";
+import { mainnet, sepolia } from "starknet-vue-chains";
 import type { AccountInterface, ProviderInterface } from "starknet";
 import {
   ConnectorNotConnectedError,

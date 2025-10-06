@@ -1,5 +1,5 @@
-import { devnet, mainnet } from "@starknet-react/chains";
-import { publicProvider } from "@starknet-react/chains/providers";
+import { devnet, mainnet } from "starknet-vue-chains";
+import { publicProvider } from "starknet-vue-chains/providers";
 import { QueryClient, VueQueryPlugin } from "@tanstack/vue-query";
 import type { MockConnectorOptions } from "@starknet-react/core/src/connectors/mock";
 import { MockConnector } from "starknet-vue";

@@ -1,4 +1,4 @@
-import type { Address } from "@starknet-react/chains";
+import type { Address } from "starknet-vue-chains";
 import { reactive, shallowRef, watch } from "vue";
 import type { AccountInterface } from "starknet";
 

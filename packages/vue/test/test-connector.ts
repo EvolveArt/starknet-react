@@ -4,7 +4,7 @@ import {
   type RpcMessage,
   type RpcTypeToMessageMap,
 } from "@starknet-io/types-js";
-import { devnet } from "@starknet-react/chains";
+import { devnet } from "starknet-vue-chains";
 import type {
   AccountInterface,
   PaymasterInterface,

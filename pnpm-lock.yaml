@@ -96,9 +96,6 @@ importers:
 
   examples/starknet-vue-demo:
     dependencies:
-      '@starknet-react/chains':
-        specifier: workspace:^
-        version: link:../../packages/chains
       '@tanstack/vue-query':
         specifier: ^5.25.0
         version: 5.90.2(vue@3.5.22(typescript@5.7.2))
@@ -108,6 +105,9 @@ importers:
       starknet-vue:
         specifier: workspace:^
         version: link:../../packages/vue
+      starknet-vue-chains:
+        specifier: 1.0.0-alpha.0
+        version: 1.0.0-alpha.0
       vue:
         specifier: ^3.4.0
         version: 3.5.22(typescript@5.7.2)
@@ -255,9 +255,6 @@ importers:
       '@starknet-io/types-js':
         specifier: ^0.7.10
         version: 0.7.10
-      '@starknet-react/chains':
-        specifier: workspace:^
-        version: link:../chains
       '@starknet-react/core':
         specifier: workspace:^
         version: link:../core
@@ -273,6 +270,9 @@ importers:
       get-starknet-core:
         specifier: ^4.0.0
         version: 4.0.0
+      starknet-vue-chains:
+        specifier: 1.0.0-alpha.0
+        version: 1.0.0-alpha.0
       viem:
         specifier: ^2.21.1
         version: 2.33.1(bufferutil@4.0.9)(typescript@5.7.2)(utf-8-validate@5.0.10)(zod@3.23.8)
@@ -6050,6 +6050,9 @@ packages:
   stacktrace-parser@0.1.11:
     resolution: {integrity: sha512-WjlahMgHmCJpqzU8bIBy4qtsZdU9lRlcZE3Lvyej6t4tuOuv1vk57OW3MBrj6hXBFx/nNoC9MPMTcr5YA7NQbg==}
     engines: {node: '>=6'}
+
+  starknet-vue-chains@1.0.0-alpha.0:
+    resolution: {integrity: sha512-6QKasAHvwdM0Az7dmkBWV09I4Ozjdk1k6poh7DIqi7LjBkesFqa3uaAKVbyRfA89fD7DDyvj5U0AR0mRI8wurg==}
 
   starknet@4.4.0:
     resolution: {integrity: sha512-e/LaLbi9M3ByUq/YJw7VLN6axwHSEF4I3lAJ7s6MkI4aXmeSG771Qid+kNAcXsF+Z7HYtuuYz+eImSSjR0r7bA==}
@@ -14493,6 +14496,10 @@ snapshots:
   stacktrace-parser@0.1.11:
     dependencies:
       type-fest: 0.7.1
+
+  starknet-vue-chains@1.0.0-alpha.0:
+    dependencies:
+      starknet: 8.1.2
 
   starknet@4.4.0:
     dependencies:

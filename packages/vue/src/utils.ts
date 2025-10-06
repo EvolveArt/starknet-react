@@ -1,4 +1,4 @@
-import type { Address } from "@starknet-react/chains";
+import type { Address } from "starknet-vue-chains";
 import { validateAndParseAddress } from "starknet";
 
 /**

@@ -1,5 +1,5 @@
-import { devnet } from "@starknet-react/chains";
-import { publicProvider } from "@starknet-react/chains/providers";
+import { devnet } from "starknet-vue-chains";
+import { publicProvider } from "starknet-vue-chains/providers";
 import { QueryClient } from "@tanstack/vue-query";
 import { flushPromises, mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
