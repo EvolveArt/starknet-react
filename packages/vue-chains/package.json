@@ -1,5 +1,5 @@
 {
-  "name": "@starknet-vue/chains",
+  "name": "starknet-vue-chains",
   "version": "1.0.0-alpha.0",
   "license": "MIT",
   "repository": "apibara/starknet-react",
