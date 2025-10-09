@@ -32,6 +32,23 @@
         </button>
       </div>
     </section>
+
+    <section v-if="account.isConnected" class="card">
+      <h2>Approve USDC</h2>
+      <p class="hint">Approve 1 USDC to vault on {{ network.chain.name }}</p>
+
+      <div class="tx-info">
+        <p v-if="txData"><strong>Transaction Hash:</strong> {{ txData.transaction_hash }}</p>
+        <p v-if="txIsPending" class="status pending">⏳ Transaction pending...</p>
+        <p v-if="txIsError" class="status error">❌ Error: {{ txError?.message }}</p>
+      </div>
+
+      <div class="actions">
+        <button @click="approveUSDC" :disabled="txIsPending || !account.isConnected">
+          {{ txIsPending ? 'Approving...' : 'Approve USDC' }}
+        </button>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -45,7 +62,9 @@ import {
   useDisconnect,
   useInjectedConnectors,
   useNetwork,
+  useSendTransaction,
 } from "starknet-vue";
+import { type Abi, cairo } from "starknet";
 
 const account = useAccount();
 const network = useNetwork();
@@ -66,6 +85,41 @@ const connect = (connector = availableConnectors.value[0]) => {
 
 const disconnect = () => {
   disconnectAsync().catch((err) => console.error("Disconnect failed", err));
+};
+
+// USDC Approve
+const USDC_ADDRESS = "0x053C91253BC9682c04929cA02ED00b3E423f6710D2ee7e0D5EBB06F3eCF368A8";
+const VAULT_ADDRESS = "0x040e346ed730df66b602892db0d412af32c09a5625e77067a3dc390481cf89eb";
+
+const {
+  sendAsync,
+  data: txData,
+  isPending: txIsPending,
+  isError: txIsError,
+  error: txError
+} = useSendTransaction({});
+
+const approveUSDC = async () => {
+  if (!account.address) return;
+
+  const amount = cairo.uint256(1_000_000n); // 1 USDC (6 decimals)
+
+  const approveCall = [{
+    contractAddress: USDC_ADDRESS,
+    entrypoint: "approve",
+    calldata: [
+      VAULT_ADDRESS,
+      amount.low,
+      amount.high,
+    ],
+  }];
+
+  try {
+    const result = await sendAsync(approveCall);
+    console.log("Transaction sent successfully:", result);
+  } catch (err) {
+    console.error("Failed to send transaction:", err);
+  }
 };
 </script>
 
@@ -145,5 +199,27 @@ button:not(:disabled):hover {
   margin-top: 1rem;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.tx-info {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.status {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.status.pending {
+  color: #fbbf24;
+}
+
+.status.error {
+  color: #f87171;
 }
 </style>

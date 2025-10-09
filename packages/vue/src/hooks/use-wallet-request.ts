@@ -50,7 +50,7 @@ export function useWalletRequest<T extends RequestMessageTypes>(
     unknown
   >({
     mutationKey: mutationKey({ type, params }),
-    mutationFn: mutationFn({ connector: starknet.connector }),
+    mutationFn: mutationFn(starknet),
     ...((rest ?? {}) as UseMutationProps<
       RequestResult<T>,
       Error,
@@ -77,14 +77,12 @@ function mutationKey<T extends RequestMessageTypes>({
   return [{ entity: "walletRequest", type, params }] as const;
 }
 
-function mutationFn<T extends RequestMessageTypes>({
-  connector,
-}: {
-  connector?: Connector;
-}) {
+function mutationFn<T extends RequestMessageTypes>(
+  starknet: ReturnType<typeof useStarknet>,
+) {
   return async ({ type, params }: RequestArgs<T>) => {
-    if (!connector) throw new Error("No connector connected");
+    if (!starknet.connector) throw new Error("No connector connected");
     if (!type) throw new Error("Type is required");
-    return await connector.request({ type, params });
+    return await starknet.connector.request({ type, params });
   };
 }
