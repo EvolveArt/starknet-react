@@ -79,33 +79,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { watch } from "vue";
 import {
-  braavos,
-  ready,
   useAccount,
   useBalance,
   useConnect,
   useDisconnect,
-  useInjectedConnectors,
   useNetwork,
   useSendTransaction,
+  useStarknet,
 } from "starknet-vue";
 import { type Abi, cairo } from "starknet";
 
 const account = useAccount();
 const network = useNetwork();
-const { connectors } = useInjectedConnectors({
-    recommended: [ready(), braavos()],
-    includeRecommended: "always",
-    order: "alphabetical",
-  });
+const { connectors: availableConnectors } = useStarknet();
 const { connectAsync } = useConnect();
 const { disconnectAsync } = useDisconnect();
 
-const availableConnectors = computed(() => connectors);
-
-const connect = (connector = availableConnectors.value[0]) => {
+const connect = (connector = availableConnectors[0]) => {
   if (!connector) return;
   connectAsync({ connector }).catch((err) => console.error("Connect failed", err));
 };
@@ -121,7 +113,7 @@ const nativeBalance = useBalance({
   enabled: () => !!account.address,
 });
 
-const USDC_ADDRESS = "0x053C91253BC9682c04929cA02ED00b3E423f6710D2ee7e0D5EBB06F3eCF368A8";
+const USDC_ADDRESS = "0x0783b6c014ae99767df5120dd5c4ebea998e78944d92aee457dfc7e86a405349";
 
 const usdcBalance = useBalance({
   address: () => account.address,
