@@ -34,6 +34,32 @@
     </section>
 
     <section v-if="account.isConnected" class="card">
+      <h2>Balances</h2>
+
+      <div class="balance-grid">
+        <div class="balance-item">
+          <p class="balance-label">Native Token ({{ network.chain.nativeCurrency.symbol }})</p>
+          <p v-if="nativeBalance.isPending.value" class="balance-value loading">Loading...</p>
+          <p v-else-if="nativeBalance.isError.value" class="balance-value error">Error loading balance</p>
+          <p v-else-if="nativeBalance.data.value" class="balance-value">
+            {{ nativeBalance.data.value.formatted }} {{ nativeBalance.data.value.symbol }}
+          </p>
+          <p v-else class="balance-value">—</p>
+        </div>
+
+        <div class="balance-item">
+          <p class="balance-label">USDC Balance</p>
+          <p v-if="usdcBalance.isPending.value" class="balance-value loading">Loading...</p>
+          <p v-else-if="usdcBalance.isError.value" class="balance-value error">Error loading balance</p>
+          <p v-else-if="usdcBalance.data.value" class="balance-value">
+            {{ usdcBalance.data.value.formatted }} {{ usdcBalance.data.value.symbol }}
+          </p>
+          <p v-else class="balance-value">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section v-if="account.isConnected" class="card">
       <h2>Approve USDC</h2>
       <p class="hint">Approve 1 USDC to vault on {{ network.chain.name }}</p>
 
@@ -53,11 +79,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import {
   braavos,
   ready,
   useAccount,
+  useBalance,
   useConnect,
   useDisconnect,
   useInjectedConnectors,
@@ -87,8 +114,34 @@ const disconnect = () => {
   disconnectAsync().catch((err) => console.error("Disconnect failed", err));
 };
 
-// USDC Approve
+// Balances
+const nativeBalance = useBalance({
+  address: () => account.address,
+  watch: true,
+  enabled: () => !!account.address,
+});
+
 const USDC_ADDRESS = "0x053C91253BC9682c04929cA02ED00b3E423f6710D2ee7e0D5EBB06F3eCF368A8";
+
+const usdcBalance = useBalance({
+  address: () => account.address,
+  token: USDC_ADDRESS,
+  watch: true,
+  enabled: () => !!account.address,
+});
+
+// Debug
+watch(() => account.address, (newAddr) => {
+  console.log("Account address changed:", newAddr);
+  console.log("Native balance enabled:", !!newAddr);
+  console.log("Native balance isLoading:", nativeBalance.isLoading);
+  console.log("Native balance isPending:", nativeBalance.isPending);
+  console.log("Native balance isSuccess:", nativeBalance.isSuccess);
+  console.log("Native balance data:", nativeBalance.data);
+  console.log("Native balance data value:", nativeBalance.data?.value);
+}, { immediate: true });
+
+// USDC Approve
 const VAULT_ADDRESS = "0x040e346ed730df66b602892db0d412af32c09a5625e77067a3dc390481cf89eb";
 
 const {
@@ -221,5 +274,39 @@ button:not(:disabled):hover {
 
 .status.error {
   color: #f87171;
+}
+
+.balance-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.balance-item {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.balance-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.balance-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #81e6d9;
+}
+
+.balance-value.loading {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+.balance-value.error {
+  color: #f87171;
+  font-size: 0.9rem;
 }
 </style>
