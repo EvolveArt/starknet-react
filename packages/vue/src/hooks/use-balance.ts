@@ -60,7 +60,13 @@ export function useBalance({
   const { chain } = useNetwork();
 
   const address = computed(() => toValue(address_));
-  const token = computed(() => toValue(token_) ?? chain.nativeCurrency.address);
+  // Only fallback to native currency if token parameter was not provided at all
+  const tokenWasProvided = arguments.length > 0 && 'token' in arguments[0];
+  const token = computed(() => {
+    const tokenValue = toValue(token_);
+    if (tokenValue !== undefined) return tokenValue;
+    return tokenWasProvided ? undefined : chain.nativeCurrency.address;
+  });
 
   const { contract } = useContract({
     abi: balanceABIFragment,
