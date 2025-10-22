@@ -60,6 +60,36 @@
     </section>
 
     <section v-if="account.isConnected" class="card">
+      <h2>Dynamic Token Balance (Reactivity Test)</h2>
+      <p class="hint">Select different tokens to test balance reactivity</p>
+
+      <div class="token-selector">
+        <button
+          v-for="token in availableTokens"
+          :key="token.address"
+          @click="selectedToken = token.address"
+          :class="{ active: selectedToken === token.address }"
+        >
+          {{ token.symbol }}
+        </button>
+      </div>
+
+      <div class="balance-item">
+        <p class="balance-label">
+          Selected Token: {{ availableTokens.find(t => t.address === selectedToken)?.symbol }}
+        </p>
+        <p v-if="dynamicBalance.isPending.value" class="balance-value loading">Loading...</p>
+        <p v-else-if="dynamicBalance.isError.value" class="balance-value error">
+          Error: {{ dynamicBalance.error.value?.message }}
+        </p>
+        <p v-else-if="dynamicBalance.data.value" class="balance-value">
+          {{ dynamicBalance.data.value.formatted }} {{ dynamicBalance.data.value.symbol }}
+        </p>
+        <p v-else class="balance-value">—</p>
+      </div>
+    </section>
+
+    <section v-if="account.isConnected" class="card">
       <h2>Approve USDC</h2>
       <p class="hint">Approve 1 USDC to vault on {{ network.chain.name }}</p>
 
@@ -79,7 +109,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from "vue";
+import { ref, watch } from "vue";
 import {
   useAccount,
   useBalance,
@@ -113,11 +143,29 @@ const nativeBalance = useBalance({
   enabled: () => !!account.address,
 });
 
-const USDC_ADDRESS = "0x0783b6c014ae99767df5120dd5c4ebea998e78944d92aee457dfc7e86a405349";
+const USDC_ADDRESS = "0x053C91253BC9682c04929cA02ED00b3E423f6710D2ee7e0D5EBB06F3eCF368A8";
 
 const usdcBalance = useBalance({
   address: () => account.address,
   token: USDC_ADDRESS,
+  watch: true,
+  enabled: () => !!account.address,
+});
+
+// Dynamic token selector for reactivity testing
+const availableTokens = [
+  { symbol: "USDC", address: "0x053C91253BC9682c04929cA02ED00b3E423f6710D2ee7e0D5EBB06F3eCF368A8" },
+  { symbol: "USDT", address: "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8" },
+  { symbol: "STRK", address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d" },
+  { symbol: "DAI", address: "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3" },
+] as const;
+
+const selectedToken = ref(availableTokens[0].address);
+
+// Dynamic balance that changes with selected token - TESTS REACTIVITY!
+const dynamicBalance = useBalance({
+  address: () => account.address,
+  token: selectedToken, // Pass the ref directly - this will be reactive now!
   watch: true,
   enabled: () => !!account.address,
 });
@@ -132,6 +180,12 @@ watch(() => account.address, (newAddr) => {
   console.log("Native balance data:", nativeBalance.data);
   console.log("Native balance data value:", nativeBalance.data?.value);
 }, { immediate: true });
+
+// Debug dynamic balance reactivity
+watch(selectedToken, (newToken) => {
+  console.log("Selected token changed to:", newToken);
+  console.log("Dynamic balance should update automatically!");
+});
 
 // USDC Approve
 const VAULT_ADDRESS = "0x040e346ed730df66b602892db0d412af32c09a5625e77067a3dc390481cf89eb";
@@ -300,5 +354,31 @@ button:not(:disabled):hover {
 .balance-value.error {
   color: #f87171;
   font-size: 0.9rem;
+}
+
+.token-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.token-selector button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.token-selector button.active {
+  background: rgba(129, 230, 217, 0.2);
+  border-color: #81e6d9;
+  color: #81e6d9;
+}
+
+.token-selector button:not(.active):hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 </style>

@@ -68,9 +68,9 @@ export function useBalance({
     return tokenWasProvided ? undefined : chain.nativeCurrency.address;
   });
 
-  const { contract } = useContract({
+  const contractResult = useContract({
     abi: balanceABIFragment,
-    address: token.value,
+    address: token,
   });
 
   const queryKey_ = computed(() =>
@@ -78,7 +78,7 @@ export function useBalance({
   );
 
   const enabled = computed(
-    () => Boolean(toValue(enabled_) && contract && address.value),
+    () => Boolean(toValue(enabled_) && contractResult.contract && address.value),
   );
 
   const refetchInterval =
@@ -98,7 +98,7 @@ export function useBalance({
     queryKey: queryKey_,
     queryFn: () => {
       const addr = address.value;
-      const cntr = contract;
+      const cntr = contractResult.contract;
 
       if (!addr) throw new Error("address is required");
       if (!cntr) throw new Error("contract is required");

@@ -8,7 +8,7 @@ import type {
   ExtractArgs,
   FunctionRet,
 } from "abi-wan-kanabi/kanabi";
-import { computed } from "vue";
+import { computed, toValue, type MaybeRefOrGetter } from "vue";
 import {
   type Call,
   type CallOptions,
@@ -82,7 +82,7 @@ export interface UseContractArgs<TAbi extends Abi> {
    */
   abi?: TAbi;
   /** The contract address. */
-  address?: Address;
+  address?: MaybeRefOrGetter<Address | undefined>;
   /** The provider, by default it will be the current one. */
   provider?: ProviderInterface | null;
 }
@@ -104,12 +104,13 @@ export interface UseContractResult<TAbi extends Abi> {
  */
 export function useContract<TAbi extends Abi>({
   abi,
-  address,
+  address: address_,
   provider: providedProvider,
 }: UseContractArgs<TAbi>): UseContractResult<TAbi> {
   const { provider: currentProvider } = useStarknet();
 
   const contract = computed(() => {
+    const address = toValue(address_);
     const provider = providedProvider ? providedProvider : currentProvider;
     if (abi && address && provider) {
       return new Contract({
